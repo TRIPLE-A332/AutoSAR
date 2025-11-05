@@ -42,8 +42,7 @@ It accepts a JSON input describing a security or fraud incident, masks sensitive
 ## Example Output
 ```json
 {
-  "case_id": "INC-2025-1002",
-  "timestamp": "20251105T045800Z",
+  "s3_key": "sar-output/INC-2025-1002/20251105T040016Z.json",
   "narrative": "On November 3, 2025, an employee [EMAIL:abc123] received a phishing email that led to credential theft..."
 }
 ```
@@ -54,5 +53,3 @@ It accepts a JSON input describing a security or fraud incident, masks sensitive
 3. Configure API Gateway with a POST method pointing to the Lambda.
 4. Test using Postman with the sample JSON input.
 
-## Project Purpose
-This project was developed for a **graduate-level cybersecurity and AI course** to demonstrate secure LLM integration, data masking, and automated report generation using AWS services.
