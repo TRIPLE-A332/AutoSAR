@@ -1,4 +1,4 @@
-# AutoSAR – Automated Suspicious Activity Report Generator
+# AutoSAR – Automated Suspicious Activity Report Generator.
 
 ## Overview
 AutoSAR is a serverless cybersecurity compliance tool that generates structured Suspicious Activity Report (SAR) narratives using **AWS Bedrock (Meta Llama 3.2 Instruct)**.

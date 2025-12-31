@@ -87,7 +87,7 @@ JSON Input:
     body = {"prompt": prompt, "max_gen_len": 512, "temperature": 0.25, "top_p": 0.9}
 
     resp = bedrock.invoke_model(
-        modelId=PROFILE_ARN,                  # using profile ARN as modelId (SDK-compat hack)
+        modelId=PROFILE_ARN,           # using profile ARN as modelId (SDK-compat hack)
         body=json.dumps(body),
         contentType="application/json",
         accept="application/json"
