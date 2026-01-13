@@ -1,4 +1,5 @@
 # AutoSAR – AML SAR Narrative Generator 
+Video Demo - https://youtu.be/Fv7qTpV9LMY
 
 AutoSAR is a privacy-first system for automatically generating Anti-Money Laundering (AML) Suspicious Activity Report (SAR) narratives using Large Language Models (LLMs). The project demonstrates how AI can be safely integrated into regulated financial workflows through strict redaction, prompt controls, and audit logging.
 
