@@ -1,1 +1,12 @@
-boto3
+fastapi
+uvicorn
+pydantic
+python-dotenv
+
+langchain
+langchain-core
+langchain-openai
+
+azure-storage-blob
+
+openai

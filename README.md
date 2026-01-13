@@ -1,55 +1,132 @@
-# AutoSAR – Automated Suspicious Activity Report Generator.
+# AutoSAR – AML SAR Narrative Generator 
 
-## Overview
-AutoSAR is a serverless cybersecurity compliance tool that generates structured Suspicious Activity Report (SAR) narratives using **AWS Bedrock (Meta Llama 3.2 Instruct)**.
-It accepts a JSON input describing a security or fraud incident, masks sensitive information, generates a narrative through the LLM, and stores the final report securely in an **Amazon S3** bucket.
+AutoSAR is a privacy-first system for automatically generating Anti-Money Laundering (AML) Suspicious Activity Report (SAR) narratives using Large Language Models (LLMs). The project demonstrates how AI can be safely integrated into regulated financial workflows through strict redaction, prompt controls, and audit logging.
+
+---
 
 ## Features
-- **Serverless Architecture:** Built using **AWS Lambda**, **API Gateway**, and **S3**.
-- **LLM Integration:** Uses **AWS Bedrock** with **Meta Llama 3.2 1B Instruct** through inference profiles.
-- **Data Masking:** Automatically redacts emails, account numbers, IPs, and domains before sending data to the model.
-- **Structured Reports:** Produces concise SAR narratives following AML/Compliance standards.
-- **Error Handling:** Ensures reliable execution and secure S3 storage with clean, minimal logging.
+
+- Automated SAR narrative generation from structured transaction data
+- Local redaction of sensitive information before LLM processing
+- Deterministic placeholders for sensitive fields (no PII sent to the model)
+- Azure OpenAI integration with controlled, non-hallucinating prompts
+- Single-paragraph, plain-English SAR output
+- Secure storage of narratives and metadata in Azure Blob Storage
+- RESTful API built using FastAPI
+
+---
+
+## System Flow
+
+1. Client submits transaction data as JSON
+2. Sensitive fields are redacted locally using guardrails
+3. Redacted data is sent to Azure OpenAI for narrative generation
+4. The generated SAR narrative is returned to the client
+5. Narrative, redacted input, timestamp, and model info are stored in Azure Blob Storage
+
+---
+
+## Architecture Overview
+
+Client → FastAPI → Redaction Layer → Azure OpenAI → SAR Narrative → Azure Blob Storage
+
+---
+
+## Data Protection and Compliance
+
+- Sensitive fields such as account numbers, names, emails, IP addresses, and linked accounts are redacted locally
+- Redacted placeholders remain unchanged in the generated narrative
+- The LLM is restricted to using only the provided data
+- No names, entities, or facts are invented by the model
+- Stored outputs support auditability and traceability
+
+This project is for academic demonstration purposes only and is not intended for production SAR filing.
+
+---
 
 ## Tech Stack
-- **AWS Services:** Bedrock, Lambda, API Gateway, S3
-- **Language:** Python 3.12
-- **Model:** Meta Llama 3.2 1B Instruct (via inference profile)
-- **Libraries:** boto3, botocore, re, hmac, hashlib, json
 
-## Workflow
-1. A POST request containing JSON data is sent to the API Gateway endpoint.
-2. The Lambda function masks sensitive information using deterministic pseudonymization.
-3. The sanitized payload is sent to the Bedrock LLM for SAR narrative generation.
-4. The generated output is normalized and stored in S3 under a unique case ID and timestamp.
+- Backend: FastAPI (Python)
+- LLM: Azure OpenAI
+- Prompting: LangChain
+- Storage: Azure Blob Storage
+- Environment Management: python-dotenv
+- Validation: Pydantic
 
-## Example Input
-```json
+---
+
+## Project Structure
+
+autosar/Azure/
+- app.py
+- requirements.txt
+- .env
+
+---
+
+## Environment Variables
+
+Create a `.env` file with the following values:
+
+AZURE_OPENAI_ENDPOINT=your_azure_openai_endpoint  
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key  
+AZURE_STORAGE_CONNECTION_STRING=your_azure_storage_connection_string  
+
+---
+
+## Running the Application
+
+1. Install dependencies:
+
+pip install -r requirements.txt
+
+2. Start the server:
+
+uvicorn main:app --reload
+
+3. Open API documentation:
+
+http://127.0.0.1:8000/docs
+
+---
+
+## API Usage
+
+Endpoint:  
+POST /generate-and-store
+
+Request Body Example:
+
 {
-  "security_detail_json": {
-    "case_id": "INC-2025-1002",
-    "summary": "Employee jane.doe@company.com received a phishing email...",
-    "timeline": [
-      {"ts": "2025-11-03T09:45:00Z", "event": "User clicked malicious link..."}
-    ],
-    "amount_usd": 12750,
-    "detected_by": "SIEM",
-    "actions_taken": ["Account disabled", "Wire reversed"]
+  "transaction": {
+    "account_number": "123456789",
+    "amount": 25000,
+    "transaction_type": "Wire Transfer",
+    "date": "2024-10-15",
+    "detection_source": "Transaction Monitoring System"
   }
 }
-```
 
-## Example Output
-```json
+Response Example:
+
 {
-  "s3_key": "sar-output/INC-2025-1002/20251105T040016Z.json",
-  "narrative": "On November 3, 2025, an employee [EMAIL:abc123] received a phishing email that led to credential theft..."
+  "status": "stored",
+  "filename": "sar_20241015_143212.json",
+  "narrative": "The account identified as [ACCOUNT_NUMBER_REDACTED] was involved in suspicious activity..."
 }
-```
 
-## Deployment Steps
-1. Create an S3 bucket (e.g., `sar-output-bucket`).
-2. Deploy the Lambda function and set the environment variable `INFERENCE_PROFILE_ARN`.
-3. Configure API Gateway with a POST method pointing to the Lambda.
-4. Test using Postman with the sample JSON input.
+---
 
+## Learning Outcomes
+
+- Secure use of LLMs in regulated domains
+- Prompt engineering for compliance and non-hallucination
+- Privacy-first data handling and redaction
+- Cloud-based audit logging
+- API-driven AI system design
+
+---
+
+## Author
+
+Ali Abdullah Ahmad
